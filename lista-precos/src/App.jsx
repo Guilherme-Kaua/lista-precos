@@ -222,29 +222,6 @@ const rawData = [
   },
 ];
 
-const FILTROS = [
-  { key: "todos", label: "Todos" },
-  { key: "lata", label: "🍺 Lata" },
-  { key: "long", label: "🍻 Long" },
-  { key: "refri", label: "🥤 Refri" },
-  { key: "refri_lata", label: "🥤 Refri Lata" },
-  { key: "sucos", label: "🧃 Sucos" },
-  { key: "energy", label: "⚡ Energy" },
-  { key: "agua", label: "💧 Águas" },
-  { key: "cigarro", label: "🚬 Cigarros" },
-  { key: "salgado", label: "🍟 Salgados" },
-  { key: "doce", label: "🍬 Doces" },
-  { key: "vinho", label: "🍷 Vinhos" },
-  { key: "cachaca", label: "🍾 Cachaças" },
-  { key: "destilado", label: "🥃 Destilados" },
-];
-
-const ORDENS = [
-  { key: "nome", label: "A → Z" },
-  { key: "preco_a", label: "Preço ↑" },
-  { key: "preco_d", label: "Preço ↓" },
-];
-
 const fmt = (v) =>
   v != null ? v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) : "—";
 
@@ -305,28 +282,38 @@ const resolveCartao = (catKey, item) => {
   return item.cartao ?? base;
 };
 
+const categorias = rawData.map((cat) => ({
+  key: cat.key,
+  nome: cat.categoria,
+  subtitulo: cat.subtitulo,
+  cor: cat.cor,
+  total: cat.itens.length,
+  itens: cat.itens,
+}));
+
 export default function App() {
   const [busca, setBusca] = useState("");
-  const [filtro, setFiltro] = useState("todos");
+  const [selectedKey, setSelectedKey] = useState("lata");
   const [ordem, setOrdem] = useState("nome");
 
-  const dadosFiltrados = useMemo(() => {
-    const cats = filtro === "todos" ? rawData : rawData.filter((c) => c.key === filtro);
+  const selectedCategory = useMemo(() => {
+    return rawData.find((c) => c.key === selectedKey) ?? rawData[0];
+  }, [selectedKey]);
 
-    return cats
-      .map((cat) => {
-        let itens = busca.trim()
-          ? cat.itens.filter((i) => i.nome.toLowerCase().includes(busca.toLowerCase()))
-          : [...cat.itens];
+  const itensVisiveis = useMemo(() => {
+    const cat = selectedCategory;
+    if (!cat) return [];
 
-        if (ordem === "nome") itens.sort((a, b) => a.nome.localeCompare(b.nome));
-        if (ordem === "preco_a") itens.sort((a, b) => (a.unidade ?? 999) - (b.unidade ?? 999));
-        if (ordem === "preco_d") itens.sort((a, b) => (b.unidade ?? 0) - (a.unidade ?? 0));
+    let itens = busca.trim()
+      ? cat.itens.filter((i) => i.nome.toLowerCase().includes(busca.toLowerCase()))
+      : [...cat.itens];
 
-        return { ...cat, itens };
-      })
-      .filter((c) => c.itens.length > 0);
-  }, [busca, filtro, ordem]);
+    if (ordem === "nome") itens.sort((a, b) => a.nome.localeCompare(b.nome));
+    if (ordem === "preco_a") itens.sort((a, b) => (a.unidade ?? 999) - (b.unidade ?? 999));
+    if (ordem === "preco_d") itens.sort((a, b) => (b.unidade ?? 0) - (a.unidade ?? 0));
+
+    return itens;
+  }, [busca, ordem, selectedCategory]);
 
   const total = rawData.reduce((s, c) => s + c.itens.length, 0);
 
@@ -337,8 +324,8 @@ export default function App() {
         background: ativo ? "#f5a623" : "#221608",
         color: ativo ? "#1a1209" : "#c8a050",
         border: `1px solid ${ativo ? "#f5a623" : "#443010"}`,
-        borderRadius: 20,
-        padding: "5px 12px",
+        borderRadius: 18,
+        padding: "6px 12px",
         fontSize: 11,
         fontFamily: "monospace",
         cursor: "pointer",
@@ -357,17 +344,18 @@ export default function App() {
         minHeight: "100vh",
         background: "#1a1209",
         fontFamily: "'Georgia', serif",
-        padding: "22px 14px 48px",
+        padding: "18px 12px 30px",
       }}
     >
-      <div style={{ textAlign: "center", marginBottom: 18 }}>
+      <div style={{ textAlign: "center", marginBottom: 14 }}>
         <div
           style={{
             display: "inline-block",
             border: "2px solid #f5a623",
-            borderRadius: 4,
-            padding: "5px 18px",
-            marginBottom: 3,
+            borderRadius: 6,
+            padding: "6px 18px",
+            marginBottom: 4,
+            background: "#221608",
           }}
         >
           <span
@@ -382,7 +370,7 @@ export default function App() {
             Lista de Preços
           </span>
         </div>
-        <p style={{ color: "#7a6a50", fontSize: 11, margin: 0, fontFamily: "monospace" }}>
+        <p style={{ color: "#8d7a58", fontSize: 11, margin: 0, fontFamily: "monospace" }}>
           {total} produtos · 06/06/2026
         </p>
       </div>
@@ -390,14 +378,14 @@ export default function App() {
       <input
         value={busca}
         onChange={(e) => setBusca(e.target.value)}
-        placeholder="🔍  Buscar produto…"
+        placeholder="🔍 Buscar dentro da categoria…"
         style={{
           width: "100%",
           boxSizing: "border-box",
           background: "#221608",
           border: "1px solid #443010",
-          borderRadius: 8,
-          padding: "9px 14px",
+          borderRadius: 10,
+          padding: "11px 14px",
           color: "#f0dbb0",
           fontSize: 13,
           fontFamily: "monospace",
@@ -406,113 +394,194 @@ export default function App() {
         }}
       />
 
-      <div style={{ marginBottom: 8 }}>
+      <div style={{ marginBottom: 14 }}>
         <p
           style={{
-            color: "#7a6a50",
+            color: "#8d7a58",
             fontSize: 9,
             fontFamily: "monospace",
             letterSpacing: 1,
             textTransform: "uppercase",
-            margin: "0 0 6px 2px",
+            margin: "0 0 8px 2px",
           }}
         >
-          Categoria
+          Hub de categorias
         </p>
-        <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 6 }}>
-          {FILTROS.map((f) => pill(filtro === f.key, () => setFiltro(f.key), f.label))}
-        </div>
-      </div>
 
-      <div style={{ marginBottom: 18 }}>
-        <p
+        <div
           style={{
-            color: "#7a6a50",
-            fontSize: 9,
-            fontFamily: "monospace",
-            letterSpacing: 1,
-            textTransform: "uppercase",
-            margin: "0 0 6px 2px",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(96px, 1fr))",
+            gap: 10,
           }}
         >
-          Ordenar por
-        </p>
-        <div style={{ display: "flex", gap: 6 }}>
-          {ORDENS.map((o) => pill(ordem === o.key, () => setOrdem(o.key), o.label))}
-        </div>
-      </div>
+          {categorias.map((cat) => {
+            const ativo = selectedKey === cat.key;
 
-      {dadosFiltrados.length === 0 && (
-        <p
-          style={{
-            color: "#7a6a50",
-            textAlign: "center",
-            fontFamily: "monospace",
-            fontSize: 13,
-          }}
-        >
-          Nenhum produto encontrado.
-        </p>
-      )}
-
-      {dadosFiltrados.map((cat) => (
-        <div key={cat.key} style={{ marginBottom: 26 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-            <div style={{ flex: 1, height: 1, background: cat.cor + "44" }} />
-            <div style={{ textAlign: "center" }}>
-              <span
+            return (
+              <button
+                key={cat.key}
+                onClick={() => setSelectedKey(cat.key)}
                 style={{
-                  color: cat.cor,
-                  fontSize: 14,
-                  fontWeight: "bold",
-                  letterSpacing: 1,
+                  aspectRatio: "1 / 1",
+                  borderRadius: 14,
+                  border: `1px solid ${ativo ? cat.cor : cat.cor + "55"}`,
+                  background: ativo
+                    ? `linear-gradient(180deg, ${cat.cor}22, #221608)`
+                    : "#201406",
+                  boxShadow: ativo ? `0 0 0 1px ${cat.cor}55 inset` : "none",
+                  color: "#f0dbb0",
+                  padding: 10,
+                  cursor: "pointer",
+                  textAlign: "left",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  gap: 8,
                 }}
               >
-                {cat.categoria}
-              </span>
-              {cat.subtitulo && (
-                <div
-                  style={{
-                    color: cat.cor + "CC",
-                    fontSize: 10,
-                    fontFamily: "monospace",
-                    letterSpacing: 0.5,
-                    marginTop: 2,
-                  }}
-                >
-                  {cat.subtitulo}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+                  <div
+                    style={{
+                      width: 12,
+                      height: 12,
+                      borderRadius: 999,
+                      background: cat.cor,
+                      boxShadow: `0 0 12px ${cat.cor}66`,
+                    }}
+                  />
+                  <span
+                    style={{
+                      color: ativo ? cat.cor : "#8d7a58",
+                      fontSize: 10,
+                      fontFamily: "monospace",
+                    }}
+                  >
+                    {cat.total} itens
+                  </span>
                 </div>
-              )}
-            </div>
-            <div style={{ flex: 1, height: 1, background: cat.cor + "44" }} />
-          </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 72px 68px 68px",
-              padding: "0 12px 5px",
-            }}
-          >
-            {["Produto", "Unidade", "Caixa¹", "Cartão"].map((h) => (
-              <span
-                key={h}
+                <div>
+                  <div
+                    style={{
+                      color: ativo ? "#fff4d6" : "#f0dbb0",
+                      fontSize: 13,
+                      lineHeight: 1.15,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {cat.nome}
+                  </div>
+                  {cat.subtitulo && (
+                    <div
+                      style={{
+                        color: ativo ? cat.cor : "#8d7a58",
+                        fontSize: 10,
+                        fontFamily: "monospace",
+                        marginTop: 4,
+                        lineHeight: 1.2,
+                      }}
+                    >
+                      {cat.subtitulo}
+                    </div>
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 12 }}>
+        <p
+          style={{
+            color: "#8d7a58",
+            fontSize: 9,
+            fontFamily: "monospace",
+            letterSpacing: 1,
+            textTransform: "uppercase",
+            margin: "0 0 6px 2px",
+          }}
+        >
+          Ordenar itens
+        </p>
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          {[
+            { key: "nome", label: "A → Z" },
+            { key: "preco_a", label: "Preço ↑" },
+            { key: "preco_d", label: "Preço ↓" },
+          ].map((o) => pill(ordem === o.key, () => setOrdem(o.key), o.label))}
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 12 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            marginBottom: 6,
+          }}
+        >
+          <div style={{ flex: 1, height: 1, background: selectedCategory.cor + "55" }} />
+          <div style={{ textAlign: "center" }}>
+            <span
+              style={{
+                color: selectedCategory.cor,
+                fontSize: 14,
+                fontWeight: "bold",
+                letterSpacing: 1,
+              }}
+            >
+              {selectedCategory.categoria}
+            </span>
+            {selectedCategory.subtitulo && (
+              <div
                 style={{
-                  color: "#7a6a50",
-                  fontSize: 9,
-                  letterSpacing: 1,
-                  textTransform: "uppercase",
+                  color: selectedCategory.cor + "CC",
+                  fontSize: 10,
                   fontFamily: "monospace",
-                  textAlign: h === "Produto" ? "left" : "center",
+                  marginTop: 2,
                 }}
               >
-                {h}
-              </span>
-            ))}
+                {selectedCategory.subtitulo}
+              </div>
+            )}
           </div>
+          <div style={{ flex: 1, height: 1, background: selectedCategory.cor + "55" }} />
+        </div>
 
-          {cat.itens.map((item) => {
-            const cartao = resolveCartao(cat.key, item);
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 72px 68px 68px",
+            padding: "0 12px 5px",
+          }}
+        >
+          {["Produto", "Unidade", "Caixa¹", "Cartão"].map((h) => (
+            <span
+              key={h}
+              style={{
+                color: "#8d7a58",
+                fontSize: 9,
+                letterSpacing: 1,
+                textTransform: "uppercase",
+                fontFamily: "monospace",
+                textAlign: h === "Produto" ? "left" : "center",
+              }}
+            >
+              {h}
+            </span>
+          ))}
+        </div>
+
+        {itensVisiveis.length === 0 ? (
+          <p style={{ color: "#8d7a58", textAlign: "center", fontFamily: "monospace", fontSize: 13 }}>
+            Nenhum produto encontrado.
+          </p>
+        ) : (
+          itensVisiveis.map((item) => {
+            const cartao = resolveCartao(selectedCategory.key, item);
 
             return (
               <div
@@ -520,9 +589,9 @@ export default function App() {
                 style={{
                   background: "#221608",
                   border: "1px solid #332510",
-                  borderRadius: 8,
-                  padding: "9px 12px",
-                  marginBottom: 5,
+                  borderRadius: 10,
+                  padding: "10px 12px",
+                  marginBottom: 6,
                   display: "grid",
                   gridTemplateColumns: "1fr 72px 68px 68px",
                   alignItems: "center",
@@ -535,7 +604,7 @@ export default function App() {
                 <div style={{ textAlign: "center" }}>
                   <span
                     style={{
-                      color: item.unidade != null ? cat.cor : "#3a2e1e",
+                      color: item.unidade != null ? selectedCategory.cor : "#3a2e1e",
                       fontSize: 13,
                       fontWeight: "bold",
                     }}
@@ -567,60 +636,51 @@ export default function App() {
                 </div>
               </div>
             );
-          })}
-        </div>
-      ))}
+          })
+        )}
+      </div>
 
       <div
         style={{
-          borderTop: "1px solid #4b3a20",
-          marginTop: 10,
-          paddingTop: 18,
-          background: "linear-gradient(to bottom, rgba(34,22,8,0), rgba(34,22,8,0.35))",
-          borderRadius: 10,
+          marginTop: 14,
+          background: "#201406",
+          border: "1px solid #4b3a20",
+          borderRadius: 14,
+          padding: "14px 14px",
+          boxShadow: "0 6px 20px rgba(0,0,0,0.18)",
         }}
       >
-        <div
+        <p
           style={{
-            background: "#201406",
-            border: "1px solid #4b3a20",
-            borderRadius: 12,
-            padding: "14px 14px",
-            boxShadow: "0 6px 20px rgba(0,0,0,0.18)",
+            color: "#f0dbb0",
+            fontSize: 11,
+            fontFamily: "monospace",
+            margin: 0,
+            lineHeight: 1.9,
           }}
         >
-          <p
-            style={{
-              color: "#f0dbb0",
-              fontSize: 11,
-              fontFamily: "monospace",
-              margin: 0,
-              lineHeight: 1.9,
-            }}
-          >
-            <strong style={{ color: "#f5a623" }}>Regras do cartão:</strong>
-            <br />
-            • A partir de R$50 na soma da conta, o acréscimo passa para R$2,00.
-            <br />
-            • Itens de até R$2,00 não recebem acréscimo.
-            <br />
-            • Doces, salgados e energéticos sozinhos não têm acréscimo.
-            <br />
-            • Vodka, Rum Montilla 1L, vinhos e cachaças: +R$1,00.
-            <br />
-            • Cigarros em carteira/pacote: +R$1,00.
-            <br />
-            • Citrus 1L e água sem gás: +R$0,50.
-            <br />
-            • Isqueiro: +R$0,50.
-            <br />
-            • Quinta do Morgado 750ml: R$16,50 no cartão.
-            <br />
-            • Cervejas lata: 350ml, exceto Skol Beats 269ml.
-            <br />
-            • Cervejas long: 330ml.
-          </p>
-        </div>
+          <strong style={{ color: "#f5a623" }}>Regras do cartão:</strong>
+          <br />
+          • A partir de R$50 na soma da conta, o acréscimo passa para R$2,00.
+          <br />
+          • Itens de até R$2,00 não recebem acréscimo.
+          <br />
+          • Doces, salgados e energéticos sozinhos não têm acréscimo.
+          <br />
+          • Vodka, Rum Montilla 1L, vinhos e cachaças: +R$1,00.
+          <br />
+          • Cigarros em carteira/pacote: +R$1,00.
+          <br />
+          • Citrus 1L e água sem gás: +R$0,50.
+          <br />
+          • Isqueiro: +R$0,50.
+          <br />
+          • Quinta do Morgado 750ml: R$16,50 no cartão.
+          <br />
+          • Cervejas lata: 350ml, exceto Skol Beats 269ml.
+          <br />
+          • Cervejas long: 330ml.
+        </p>
       </div>
     </div>
   );

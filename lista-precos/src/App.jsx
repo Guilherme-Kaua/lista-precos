@@ -371,7 +371,7 @@ export default function App() {
           </span>
         </div>
         <p style={{ color: "#8d7a58", fontSize: 11, margin: 0, fontFamily: "monospace" }}>
-          {total} produtos · 06/06/2026
+          {total} produtos · 08/06/2026
         </p>
       </div>
 
@@ -472,19 +472,6 @@ export default function App() {
                   >
                     {cat.nome}
                   </div>
-                  {cat.subtitulo && (
-                    <div
-                      style={{
-                        color: ativo ? cat.cor : "#8d7a58",
-                        fontSize: 10,
-                        fontFamily: "monospace",
-                        marginTop: 4,
-                        lineHeight: 1.2,
-                      }}
-                    >
-                      {cat.subtitulo}
-                    </div>
-                  )}
                 </div>
               </button>
             );
@@ -535,18 +522,6 @@ export default function App() {
             >
               {selectedCategory.categoria}
             </span>
-            {selectedCategory.subtitulo && (
-              <div
-                style={{
-                  color: selectedCategory.cor + "CC",
-                  fontSize: 10,
-                  fontFamily: "monospace",
-                  marginTop: 2,
-                }}
-              >
-                {selectedCategory.subtitulo}
-              </div>
-            )}
           </div>
           <div style={{ flex: 1, height: 1, background: selectedCategory.cor + "55" }} />
         </div>
@@ -669,7 +644,7 @@ export default function App() {
           <br />
           • Vodka, Rum Montilla 1L, vinhos e cachaças: +R$1,00.
           <br />
-          • Cigarros em carteira/pacote: +R$1,00.
+          • Cigarros em carteira ou pacote: +R$1,00 (Caixa = carteira/pacote).
           <br />
           • Citrus 1L e água sem gás: +R$0,50.
           <br />
@@ -679,7 +654,7 @@ export default function App() {
           <br />
           • Cervejas lata: 350ml, exceto Skol Beats 269ml.
           <br />
-          • Cervejas long: 330ml.
+          • Cervejas long: 330ml (Pack = 6 unidades).
         </p>
       </div>
     </div>

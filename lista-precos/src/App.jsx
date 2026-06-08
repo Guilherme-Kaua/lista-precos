@@ -282,22 +282,35 @@ const resolveCartao = (catKey, item) => {
   return item.cartao ?? base;
 };
 
-const categorias = rawData.map((cat) => ({
-  key: cat.key,
-  nome: cat.categoria,
-  subtitulo: cat.subtitulo,
-  cor: cat.cor,
-  total: cat.itens.length,
-  itens: cat.itens,
-}));
+const todosItens = rawData.flatMap((cat) =>
+  cat.itens.map((i) => ({ ...i, originalCatKey: cat.key }))
+);
+
+const categorias = [
+  {
+    key: "todos",
+    nome: "🌐 Todos os Produtos",
+    cor: "#8d7a58",
+    total: todosItens.length,
+    itens: todosItens,
+  },
+  ...rawData.map((cat) => ({
+    key: cat.key,
+    nome: cat.categoria,
+    subtitulo: cat.subtitulo,
+    cor: cat.cor,
+    total: cat.itens.length,
+    itens: cat.itens.map((i) => ({ ...i, originalCatKey: cat.key })),
+  })),
+];
 
 export default function App() {
   const [busca, setBusca] = useState("");
-  const [selectedKey, setSelectedKey] = useState("lata");
+  const [selectedKey, setSelectedKey] = useState("todos");
   const [ordem, setOrdem] = useState("nome");
 
   const selectedCategory = useMemo(() => {
-    return rawData.find((c) => c.key === selectedKey) ?? rawData[0];
+    return categorias.find((c) => c.key === selectedKey) ?? categorias[0];
   }, [selectedKey]);
 
   const itensVisiveis = useMemo(() => {
@@ -437,9 +450,9 @@ export default function App() {
 
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(96px, 1fr))",
-            gap: 10,
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 8,
           }}
         >
           {categorias.map((cat) => {
@@ -450,56 +463,33 @@ export default function App() {
                 key={cat.key}
                 onClick={() => setSelectedKey(cat.key)}
                 style={{
-                  minHeight: 80,
-                  borderRadius: 14,
-                  border: `1px solid ${ativo ? cat.cor : cat.cor + "55"}`,
-                  background: ativo
-                    ? `linear-gradient(180deg, ${cat.cor}22, #221608)`
-                    : "#201406",
-                  boxShadow: ativo ? `0 0 0 1px ${cat.cor}55 inset` : "none",
-                  color: "#f0dbb0",
-                  padding: 10,
+                  borderRadius: 20,
+                  border: `1px solid ${ativo ? cat.cor : cat.cor + "44"}`,
+                  background: ativo ? `linear-gradient(90deg, ${cat.cor}33, #221608)` : "#201406",
+                  color: ativo ? "#fff" : "#f0dbb0",
+                  padding: "6px 14px",
                   cursor: "pointer",
-                  textAlign: "left",
                   display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
+                  alignItems: "center",
                   gap: 8,
+                  boxShadow: ativo ? `0 0 0 1px ${cat.cor}55 inset` : "none",
                 }}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-                  <div
-                    style={{
-                      width: 12,
-                      height: 12,
-                      borderRadius: 999,
-                      background: cat.cor,
-                      boxShadow: `0 0 12px ${cat.cor}66`,
-                    }}
-                  />
-                  <span
-                    style={{
-                      color: ativo ? cat.cor : "#8d7a58",
-                      fontSize: 10,
-                      fontFamily: "monospace",
-                    }}
-                  >
-                    {cat.total} itens
-                  </span>
-                </div>
-
-                <div>
-                  <div
-                    style={{
-                      color: ativo ? "#fff4d6" : "#f0dbb0",
-                      fontSize: 13,
-                      lineHeight: 1.15,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {cat.nome}
-                  </div>
-                </div>
+                <div
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: 999,
+                    background: cat.cor,
+                    boxShadow: `0 0 8px ${cat.cor}88`,
+                  }}
+                />
+                <span style={{ fontSize: 13, fontWeight: ativo ? "bold" : "normal", whiteSpace: "nowrap" }}>
+                  {cat.nome}
+                </span>
+                <span style={{ color: ativo ? cat.cor : "#8d7a58", fontSize: 11, fontFamily: "monospace" }}>
+                  {cat.total}
+                </span>
               </button>
             );
           })}
@@ -604,7 +594,7 @@ export default function App() {
           </div>
         ) : (
           itensVisiveis.map((item) => {
-            const cartao = resolveCartao(selectedCategory.key, item);
+            const cartao = resolveCartao(item.originalCatKey, item);
             const precoBase = item.unidade ?? item.caixa ?? 0;
             const temAcrescimo = cartao != null && cartao > precoBase;
 

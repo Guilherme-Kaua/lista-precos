@@ -317,6 +317,10 @@ export default function App() {
 
   const total = rawData.reduce((s, c) => s + c.itens.length, 0);
 
+  const temCaixa = useMemo(() => {
+    return selectedCategory?.itens.some((i) => i.caixa != null) ?? false;
+  }, [selectedCategory]);
+
   const pill = (ativo, onClick, label) => (
     <button
       onClick={onClick}
@@ -375,24 +379,47 @@ export default function App() {
         </p>
       </div>
 
-      <input
-        value={busca}
-        onChange={(e) => setBusca(e.target.value)}
-        placeholder="🔍 Buscar dentro da categoria…"
-        style={{
-          width: "100%",
-          boxSizing: "border-box",
-          background: "#221608",
-          border: "1px solid #443010",
-          borderRadius: 10,
-          padding: "11px 14px",
-          color: "#f0dbb0",
-          fontSize: 13,
-          fontFamily: "monospace",
-          outline: "none",
-          marginBottom: 12,
-        }}
-      />
+      <div style={{ position: "relative", marginBottom: 12 }}>
+        <input
+          value={busca}
+          onChange={(e) => setBusca(e.target.value)}
+          placeholder="🔍 Buscar dentro da categoria…"
+          style={{
+            width: "100%",
+            boxSizing: "border-box",
+            background: "#221608",
+            border: "1px solid #443010",
+            borderRadius: 10,
+            padding: "11px 40px 11px 14px",
+            color: "#f0dbb0",
+            fontSize: 13,
+            fontFamily: "monospace",
+            outline: "none",
+          }}
+        />
+        {busca && (
+          <button
+            onClick={() => setBusca("")}
+            style={{
+              position: "absolute",
+              right: 12,
+              top: "50%",
+              transform: "translateY(-50%)",
+              background: "transparent",
+              border: "none",
+              color: "#8d7a58",
+              cursor: "pointer",
+              fontSize: 16,
+              padding: 4,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            ✕
+          </button>
+        )}
+      </div>
 
       <div style={{ marginBottom: 14 }}>
         <p
@@ -423,7 +450,7 @@ export default function App() {
                 key={cat.key}
                 onClick={() => setSelectedKey(cat.key)}
                 style={{
-                  aspectRatio: "1 / 1",
+                  minHeight: 80,
                   borderRadius: 14,
                   border: `1px solid ${ativo ? cat.cor : cat.cor + "55"}`,
                   background: ativo
@@ -504,59 +531,82 @@ export default function App() {
       <div style={{ marginBottom: 12 }}>
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            marginBottom: 6,
+            position: "sticky",
+            top: 0,
+            zIndex: 10,
+            background: "#1a1209",
+            paddingTop: 14,
+            paddingBottom: 8,
+            borderBottom: "1px solid " + selectedCategory.cor + "33",
+            margin: "0 -12px 10px",
+            paddingLeft: 12,
+            paddingRight: 12,
           }}
         >
-          <div style={{ flex: 1, height: 1, background: selectedCategory.cor + "55" }} />
-          <div style={{ textAlign: "center" }}>
-            <span
-              style={{
-                color: selectedCategory.cor,
-                fontSize: 14,
-                fontWeight: "bold",
-                letterSpacing: 1,
-              }}
-            >
-              {selectedCategory.categoria}
-            </span>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              marginBottom: 12,
+            }}
+          >
+            <div style={{ flex: 1, height: 1, background: selectedCategory.cor + "55" }} />
+            <div style={{ textAlign: "center" }}>
+              <span
+                style={{
+                  color: selectedCategory.cor,
+                  fontSize: 14,
+                  fontWeight: "bold",
+                  letterSpacing: 1,
+                }}
+              >
+                {selectedCategory.categoria}
+              </span>
+            </div>
+            <div style={{ flex: 1, height: 1, background: selectedCategory.cor + "55" }} />
           </div>
-          <div style={{ flex: 1, height: 1, background: selectedCategory.cor + "55" }} />
-        </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 72px 68px 68px",
-            padding: "0 12px 5px",
-          }}
-        >
-          {["Produto", "Unidade", "Caixa¹", "Cartão"].map((h) => (
-            <span
-              key={h}
-              style={{
-                color: "#8d7a58",
-                fontSize: 9,
-                letterSpacing: 1,
-                textTransform: "uppercase",
-                fontFamily: "monospace",
-                textAlign: h === "Produto" ? "left" : "center",
-              }}
-            >
-              {h}
-            </span>
-          ))}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: temCaixa ? "1fr 72px 68px 68px" : "1fr 72px 68px",
+              padding: "0 12px",
+            }}
+          >
+            {(temCaixa ? ["Produto", "Unidade", "Caixa¹", "Cartão"] : ["Produto", "Unidade", "Cartão"]).map((h) => (
+              <span
+                key={h}
+                style={{
+                  color: "#8d7a58",
+                  fontSize: 9,
+                  letterSpacing: 1,
+                  textTransform: "uppercase",
+                  fontFamily: "monospace",
+                  textAlign: h === "Produto" ? "left" : "center",
+                }}
+              >
+                {h}
+              </span>
+            ))}
+          </div>
         </div>
 
         {itensVisiveis.length === 0 ? (
-          <p style={{ color: "#8d7a58", textAlign: "center", fontFamily: "monospace", fontSize: 13 }}>
-            Nenhum produto encontrado.
-          </p>
+          <div style={{ textAlign: "center", padding: "40px 20px" }}>
+            <div style={{ fontSize: 36, marginBottom: 12, opacity: 0.8 }}>🔍</div>
+            <p style={{ color: "#8d7a58", fontFamily: "monospace", fontSize: 13, margin: 0 }}>
+              Nenhum produto encontrado.
+            </p>
+            <p style={{ color: "#5a4d36", fontFamily: "monospace", fontSize: 11, marginTop: 4 }}>
+              Tente buscar com outros termos.
+            </p>
+          </div>
         ) : (
           itensVisiveis.map((item) => {
             const cartao = resolveCartao(selectedCategory.key, item);
+            const precoBase = item.unidade ?? item.caixa ?? 0;
+            const temAcrescimo = cartao != null && cartao > precoBase;
 
             return (
               <div
@@ -568,7 +618,7 @@ export default function App() {
                   padding: "10px 12px",
                   marginBottom: 6,
                   display: "grid",
-                  gridTemplateColumns: "1fr 72px 68px 68px",
+                  gridTemplateColumns: temCaixa ? "1fr 72px 68px 68px" : "1fr 72px 68px",
                   alignItems: "center",
                 }}
               >
@@ -588,25 +638,29 @@ export default function App() {
                   </span>
                 </div>
 
-                <div style={{ textAlign: "center" }}>
-                  <span
-                    style={{
-                      color: item.caixa != null ? "#f0dbb0" : "#3a2e1e",
-                      fontSize: 12,
-                    }}
-                  >
-                    {fmt(item.caixa)}
-                  </span>
-                </div>
+                {temCaixa && (
+                  <div style={{ textAlign: "center" }}>
+                    <span
+                      style={{
+                        color: item.caixa != null ? "#f0dbb0" : "#3a2e1e",
+                        fontSize: 12,
+                      }}
+                    >
+                      {fmt(item.caixa)}
+                    </span>
+                  </div>
+                )}
 
                 <div style={{ textAlign: "center" }}>
                   <span
                     style={{
-                      color: cartao != null ? "#f0dbb0" : "#3a2e1e",
+                      color: cartao != null ? (temAcrescimo ? "#ff6b6b" : "#f0dbb0") : "#3a2e1e",
                       fontSize: 12,
+                      fontWeight: temAcrescimo ? "bold" : "normal",
                     }}
                   >
                     {fmt(cartao)}
+                    {temAcrescimo && <span style={{ fontSize: 9, marginLeft: 2, color: "#ff6b6b" }}>↑</span>}
                   </span>
                 </div>
               </div>

@@ -1,49 +1,49 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 
 const rawData = [
   {
     key: "lata",
     categoria: "🍺 Cervejas Lata",
-    subtitulo: "350ml · Skol Beats 269ml",
+    subtitulo: "Todas 350ml • Skol Beats 269ml",
     cor: "#f5a623",
     itens: [
-      { id: 1, nome: "Amstel", unidadе: 4.0, caixa: 42, cartao: 43 },
-      { id: 2, nome: "Bohemia", unidade: 4.0, caixa: 42, cartao: 43 },
-      { id: 3, nome: "Brahma Chopp", unidade: 4.0, caixa: 42, cartao: 43 },
-      { id: 4, nome: "Brahma Duplo Malte", unidade: 4.5, caixa: 45, cartao: 46 },
-      { id: 5, nome: "Brahma Zero", unidade: 4.0, caixa: 45, cartao: 46 },
-      { id: 6, nome: "Crystal", unidade: 3.5, caixa: 33, cartao: 34 },
-      { id: 7, nome: "Heineken", unidade: 6.0, caixa: 62, cartao: 64 },
-      { id: 8, nome: "Império Branca", unidade: 4.0, caixa: 40, cartao: 41 },
-      { id: 9, nome: "Itaipava", unidade: 3.5, caixa: 35, cartao: 36 },
-      { id: 10, nome: "Lokal", unidade: 3.0, caixa: 32, cartao: 33 },
-      { id: 11, nome: "Malzbier", unidade: 6.0, caixa: null, cartao: null },
-      { id: 12, nome: "Original", unidade: 5.0, caixa: 55, cartao: 56 },
-      { id: 13, nome: "Petra", unidade: 4.0, caixa: 38, cartao: 39 },
-      { id: 14, nome: "Skol", unidade: 4.0, caixa: 42, cartao: 43 },
-      { id: 15, nome: "Skol Beats", unidade: 7.0, caixa: 54, cartao: 56 },
-      { id: 16, nome: "Skin", unidade: 3.5, caixa: 36, cartao: 37 },
-      { id: 17, nome: "Spaten", unidade: 5.0, caixa: 52, cartao: 54 },
+      { id: 1, nome: "Amstel 350ml", unidade: 4.0, caixa: 42, cartao: 43 },
+      { id: 2, nome: "Bohemia 350ml", unidade: 4.0, caixa: 42, cartao: 43 },
+      { id: 3, nome: "Brahma Chopp 350ml", unidade: 4.0, caixa: 42, cartao: 43 },
+      { id: 4, nome: "Brahma Duplo Malte 350ml", unidade: 4.5, caixa: 45, cartao: 46 },
+      { id: 5, nome: "Brahma Zero 350ml", unidade: 4.0, caixa: 45, cartao: 46 },
+      { id: 6, nome: "Crystal 350ml", unidade: 3.5, caixa: 33, cartao: 34 },
+      { id: 7, nome: "Heineken 350ml", unidade: 6.0, caixa: 62, cartao: 64 },
+      { id: 8, nome: "Império Branca 350ml", unidade: 4.0, caixa: 40, cartao: 41 },
+      { id: 9, nome: "Itaipava 350ml", unidade: 3.5, caixa: 35, cartao: 36 },
+      { id: 10, nome: "Lokal 350ml", unidade: 3.0, caixa: 32, cartao: 33 },
+      { id: 11, nome: "Malzbier 350ml", unidade: 6.0, caixa: null, cartao: null },
+      { id: 12, nome: "Original 350ml", unidade: 5.0, caixa: 55, cartao: 56 },
+      { id: 13, nome: "Petra 350ml", unidade: 4.0, caixa: 38, cartao: 39 },
+      { id: 14, nome: "Skol 350ml", unidade: 4.0, caixa: 42, cartao: 43 },
+      { id: 15, nome: "Skol Beats 269ml", unidade: 7.0, caixa: 54, cartao: 56 },
+      { id: 16, nome: "Skin 350ml", unidade: 3.5, caixa: 36, cartao: 37 },
+      { id: 17, nome: "Spaten 350ml", unidade: 5.0, caixa: 52, cartao: 54 },
     ],
   },
   {
     key: "long",
     categoria: "🍻 Cervejas Long",
-    subtitulo: "330ml · Pack de 6 unidades",
+    subtitulo: "Todas 330ml • Pack de 6 unidades",
     cor: "#c8b060",
     itens: [
-      { id: 18, nome: "Budweiser", unidade: 6.0, caixa: 36, cartao: 37 },
-      { id: 19, nome: "Cabaré", unidade: 4.5, caixa: 45, cartao: 46 },
-      { id: 20, nome: "Corona Long Normal", unidade: 7.0, caixa: 42, cartao: 43 },
-      { id: 21, nome: "Corona Long Zero", unidade: 8.0, caixa: 45, cartao: 46 },
-      { id: 22, nome: "Heineken", unidade: 7.0, caixa: 42, cartao: 43 },
-      { id: 23, nome: "Heineken Zero", unidade: 8.0, caixa: 48, cartao: 49 },
+      { id: 18, nome: "Budweiser 330ml", unidade: 6.0, caixa: 36, cartao: 37 },
+      { id: 19, nome: "Cabaré 330ml", unidade: 4.5, caixa: 45, cartao: 46 },
+      { id: 20, nome: "Corona Long Normal 330ml", unidade: 7.0, caixa: 42, cartao: 43 },
+      { id: 21, nome: "Corona Long Zero 330ml", unidade: 8.0, caixa: 45, cartao: 46 },
+      { id: 22, nome: "Heineken Long 330ml", unidade: 7.0, caixa: 42, cartao: 43 },
+      { id: 23, nome: "Heineken Zero Long 330ml", unidade: 8.0, caixa: 48, cartao: 49 },
     ],
   },
   {
     key: "refri",
     categoria: "🥤 Refrigerantes",
-    subtitulo: null,
+    subtitulo: "Garrafas",
     cor: "#e63946",
     itens: [
       { id: 24, nome: "Coca (Normal/Zero) 2L", unidade: 12, caixa: null, cartao: null },
@@ -60,19 +60,19 @@ const rawData = [
   {
     key: "refri_lata",
     categoria: "🥤 Refrigerantes Lata",
-    subtitulo: "350ml",
+    subtitulo: "Todas 350ml",
     cor: "#d63645",
     itens: [
-      { id: 33, nome: "Coca (Normal/Zero)", unidade: 4.5, caixa: null, cartao: null },
-      { id: 34, nome: "Fanta", unidade: 4.0, caixa: null, cartao: null },
-      { id: 35, nome: "Schweppes", unidade: 4.5, caixa: null, cartao: null },
-      { id: 36, nome: "Tônica", unidade: 4.5, caixa: null, cartao: null },
+      { id: 33, nome: "Coca (Normal/Zero) 350ml", unidade: 4.5, caixa: null, cartao: null },
+      { id: 34, nome: "Fanta 350ml", unidade: 4.0, caixa: null, cartao: null },
+      { id: 35, nome: "Schweppes 350ml", unidade: 4.5, caixa: null, cartao: null },
+      { id: 36, nome: "Tônica 350ml", unidade: 4.5, caixa: null, cartao: null },
     ],
   },
   {
     key: "sucos",
     categoria: "🧃 Sucos",
-    subtitulo: null,
+    subtitulo: "Citrus 1L tem acréscimo menor",
     cor: "#e8734a",
     itens: [
       { id: 37, nome: "Citrus 1L", unidade: 8, caixa: null, cartao: 8.5 },
@@ -83,7 +83,7 @@ const rawData = [
   {
     key: "energy",
     categoria: "⚡ Energéticos",
-    subtitulo: null,
+    subtitulo: "Sozinhos sem acréscimo no cartão",
     cor: "#9b59b6",
     itens: [
       { id: 40, nome: "Baly Lata 250ml", unidade: 7, caixa: null, cartao: null },
@@ -98,7 +98,7 @@ const rawData = [
   {
     key: "agua",
     categoria: "💧 Águas & Isotônicos",
-    subtitulo: null,
+    subtitulo: "Água sem gás tem acréscimo menor",
     cor: "#4a90e2",
     itens: [
       { id: 47, nome: "Água 1,5L", unidade: 4, caixa: null, cartao: null },
@@ -112,7 +112,7 @@ const rawData = [
   {
     key: "cigarro",
     categoria: "🚬 Cigarros & Acessórios",
-    subtitulo: "Caixa = carteira ou pacote",
+    subtitulo: "Caixa = carteira ou pacote • Isqueiro com acréscimo menor",
     cor: "#b5a898",
     itens: [
       { id: 53, nome: "Rothmans (Azul/Vermelho)", unidade: 1, caixa: 11, cartao: 12 },
@@ -130,7 +130,7 @@ const rawData = [
   {
     key: "salgado",
     categoria: "🍟 Salgadinhos",
-    subtitulo: null,
+    subtitulo: "Sem acréscimo no cartão quando sozinho",
     cor: "#e8a93a",
     itens: [
       { id: 63, nome: "Amendoim 24g", unidade: 1, caixa: null, cartao: null },
@@ -150,7 +150,7 @@ const rawData = [
   {
     key: "doce",
     categoria: "🍬 Doces & Balas",
-    subtitulo: null,
+    subtitulo: "Sem acréscimo no cartão quando sozinho",
     cor: "#e8749a",
     itens: [
       { id: 75, nome: "Bombom de Iogurte (5/R$1)", unidade: 1, caixa: null, cartao: null },
@@ -172,7 +172,7 @@ const rawData = [
   {
     key: "vinho",
     categoria: "🍷 Vinhos",
-    subtitulo: null,
+    subtitulo: "Quinta do Morgado 750ml = R$16,50 no cartão",
     cor: "#9b3a5a",
     itens: [
       { id: 89, nome: "Carreteiro 900ml", unidade: 7, caixa: null, cartao: 8 },
@@ -184,7 +184,7 @@ const rawData = [
   {
     key: "cachaca",
     categoria: "🍾 Cachaças",
-    subtitulo: null,
+    subtitulo: "Acréscimo de R$1,00 no cartão",
     cor: "#c07840",
     itens: [
       { id: 93, nome: "Mata Limpa / Caipira 1L", unidade: 16, caixa: null, cartao: 17 },
@@ -205,7 +205,7 @@ const rawData = [
   {
     key: "destilado",
     categoria: "🥃 Destilados",
-    subtitulo: "Vodka · Rum · Whisky",
+    subtitulo: "Vodka • Rum Montilla 1L",
     cor: "#7a6aaf",
     itens: [
       { id: 106, nome: "Vodka Slova s/ Sabor", unidade: 16, caixa: null, cartao: 17 },
@@ -248,8 +248,6 @@ const ORDENS = [
 const fmt = (v) =>
   v != null ? v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) : "—";
 
-const round2 = (n) => Math.round(n * 100) / 100;
-
 const resolveCartao = (catKey, item) => {
   const base = item.unidade;
   if (base == null) return item.cartao ?? null;
@@ -261,31 +259,32 @@ const resolveCartao = (catKey, item) => {
   if (catKey === "energy") return base;
 
   if (catKey === "sucos") {
-    if (nome.includes("citrus")) return round2(base + 0.5);
+    if (nome.includes("citrus")) return 8.5;
     return item.cartao ?? base;
   }
 
   if (catKey === "agua") {
-    if (nome.includes("sem gás")) return round2(base + 0.5);
+    if (nome.includes("sem gás")) return 2.5;
     return item.cartao ?? base;
   }
 
   if (catKey === "vinho") {
     if (nome.includes("quinta do morgado")) return 16.5;
-    return round2(base + 1);
+    return base + 1;
   }
 
   if (catKey === "cachaca") {
-    return round2(base + 1);
+    return base + 1;
   }
 
   if (catKey === "destilado") {
-    if (nome.includes("vodka") || nome.includes("rum montilla")) return round2(base + 1);
+    if (nome.includes("vodka") || nome.includes("rum montilla")) return base + 1;
     return item.cartao ?? base;
   }
 
   if (catKey === "cigarro") {
-    if (nome.includes("isqueiro")) return round2(base + 0.5);
+    if (nome.includes("isqueiro")) return base + 0.5;
+
     if (
       nome.includes("rothmans") ||
       nome.includes("calton") ||
@@ -293,8 +292,9 @@ const resolveCartao = (catKey, item) => {
       nome.includes("derb") ||
       nome.includes("free")
     ) {
-      return round2(base + 1);
+      return base + 1;
     }
+
     return base;
   }
 
@@ -311,22 +311,17 @@ export default function App() {
   const [ordem, setOrdem] = useState("nome");
 
   const dadosFiltrados = useMemo(() => {
-    const cats =
-      filtro === "todos" ? rawData : rawData.filter((c) => c.key === filtro);
+    const cats = filtro === "todos" ? rawData : rawData.filter((c) => c.key === filtro);
 
     return cats
       .map((cat) => {
         let itens = busca.trim()
-          ? cat.itens.filter((i) =>
-              i.nome.toLowerCase().includes(busca.toLowerCase())
-            )
+          ? cat.itens.filter((i) => i.nome.toLowerCase().includes(busca.toLowerCase()))
           : [...cat.itens];
 
         if (ordem === "nome") itens.sort((a, b) => a.nome.localeCompare(b.nome));
-        if (ordem === "preco_a")
-          itens.sort((a, b) => (a.unidade ?? 999) - (b.unidade ?? 999));
-        if (ordem === "preco_d")
-          itens.sort((a, b) => (b.unidade ?? 0) - (a.unidade ?? 0));
+        if (ordem === "preco_a") itens.sort((a, b) => (a.unidade ?? 999) - (b.unidade ?? 999));
+        if (ordem === "preco_d") itens.sort((a, b) => (b.unidade ?? 0) - (a.unidade ?? 0));
 
         return { ...cat, itens };
       })
@@ -425,9 +420,7 @@ export default function App() {
           Categoria
         </p>
         <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 6 }}>
-          {FILTROS.map((f) =>
-            pill(filtro === f.key, () => setFiltro(f.key), f.label)
-          )}
+          {FILTROS.map((f) => pill(filtro === f.key, () => setFiltro(f.key), f.label))}
         </div>
       </div>
 
@@ -480,10 +473,11 @@ export default function App() {
               {cat.subtitulo && (
                 <div
                   style={{
-                    color: cat.cor + "99",
+                    color: cat.cor + "CC",
                     fontSize: 10,
                     fontFamily: "monospace",
                     letterSpacing: 0.5,
+                    marginTop: 2,
                   }}
                 >
                   {cat.subtitulo}
@@ -537,6 +531,7 @@ export default function App() {
                 <span style={{ color: "#f0dbb0", fontSize: 13, fontWeight: "bold" }}>
                   {item.nome}
                 </span>
+
                 <div style={{ textAlign: "center" }}>
                   <span
                     style={{
@@ -548,6 +543,7 @@ export default function App() {
                     {fmt(item.unidade)}
                   </span>
                 </div>
+
                 <div style={{ textAlign: "center" }}>
                   <span
                     style={{
@@ -558,6 +554,7 @@ export default function App() {
                     {fmt(item.caixa)}
                   </span>
                 </div>
+
                 <div style={{ textAlign: "center" }}>
                   <span
                     style={{
@@ -574,23 +571,56 @@ export default function App() {
         </div>
       ))}
 
-      <div style={{ borderTop: "1px solid #332510", paddingTop: 14, marginTop: 4 }}>
-        <p
+      <div
+        style={{
+          borderTop: "1px solid #4b3a20",
+          marginTop: 10,
+          paddingTop: 18,
+          background: "linear-gradient(to bottom, rgba(34,22,8,0), rgba(34,22,8,0.35))",
+          borderRadius: 10,
+        }}
+      >
+        <div
           style={{
-            color: "#7a6a50",
-            fontSize: 11,
-            fontFamily: "monospace",
-            margin: 0,
-            lineHeight: 2,
+            background: "#201406",
+            border: "1px solid #4b3a20",
+            borderRadius: 12,
+            padding: "14px 14px",
+            boxShadow: "0 6px 20px rgba(0,0,0,0.18)",
           }}
         >
-          ¹ Caixa: à vista ou Pix · Cigarros: caixa = carteira/pacote.<br />
-          Longs: 330ml · Cervejas lata: 350ml, exceto Skol Beats 269ml.<br />
-          Cartão: acima de R$50 na soma da conta, acréscimo de R$2,00.<br />
-          Itens de até R$2,00 não recebem acréscimo. Doces, salgados e energéticos sozinhos não têm acréscimo.<br />
-          Citrus 1L: +R$0,50 · Água sem gás: +R$0,50 · Isqueiro: +R$0,50.<br />
-          Vinhos, cachaças, vodka e Rum Montilla 1L: +R$1,00. Quinta do Morgado 750ml: R$16,50 no cartão.
-        </p>
+          <p
+            style={{
+              color: "#f0dbb0",
+              fontSize: 11,
+              fontFamily: "monospace",
+              margin: 0,
+              lineHeight: 1.9,
+            }}
+          >
+            <strong style={{ color: "#f5a623" }}>Regras do cartão:</strong>
+            <br />
+            • A partir de R$50 na soma da conta, o acréscimo passa para R$2,00.
+            <br />
+            • Itens de até R$2,00 não recebem acréscimo.
+            <br />
+            • Doces, salgados e energéticos sozinhos não têm acréscimo.
+            <br />
+            • Vodka, Rum Montilla 1L, vinhos e cachaças: +R$1,00.
+            <br />
+            • Cigarros em carteira/pacote: +R$1,00.
+            <br />
+            • Citrus 1L e água sem gás: +R$0,50.
+            <br />
+            • Isqueiro: +R$0,50.
+            <br />
+            • Quinta do Morgado 750ml: R$16,50 no cartão.
+            <br />
+            • Cervejas lata: 350ml, exceto Skol Beats 269ml.
+            <br />
+            • Cervejas long: 330ml.
+          </p>
+        </div>
       </div>
     </div>
   );
